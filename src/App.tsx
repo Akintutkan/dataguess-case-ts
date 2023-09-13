@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import axios from 'axios';
-
-
+import "./App.css"
 // GraphQL sorgusu
 const COUNTRIES_QUERY = gql`
   query {
@@ -21,7 +19,7 @@ const COUNTRIES_QUERY = gql`
     }
   }
 `;
-
+//! Favorilere eklenmek istenirse bu kod kulllanılabilir
 // interface Country {
 //   capital: string;
 //   emoji: string;
@@ -41,25 +39,7 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [filteredData, setFilteredData] = useState<string>('name');
   // const [favorites, setFavorites] = useState<Country[]>([]);
-  const [countryFlags, setCountryFlags] = useState<string[]>([]); // Ülke bayraklarını tutmak için bir dizi
-
-  useEffect(() => {
-   
-    const fetchCountryFlags = async () => {
-      try {
-        const response = await axios.get('https://restcountries.com/v3.1/all'); // Tüm ülkeleri çekiyoruz
-        console.log(response.data)
-        const flags = response.data.map((country: any) => country.flags.png); // Ülke bayraklarını alıyoruz
-        setCountryFlags(flags);
-      } catch (error) {
-        console.error('Ülke bayraklarını alırken bir hata oluştu: ', error);
-      }
-    };
-
-    fetchCountryFlags();
-    
-  }, []);
-
+ 
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
     setSelectedColor(randomColor());
@@ -69,13 +49,11 @@ function App() {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-
+  //!favorilere eklenen ülkeleri resetlemek için kullandığım fonksiyonlar
   // const resetColor = () =>{
   //   const color = ["#FFF"];
   //   return color
   // }
-
-
   // const handleAddFavorite = (country: Country) => {
   //   const isAlreadyFavorite = favorites.some((fav) => fav.name === country.name);
   //   if (isAlreadyFavorite) {
@@ -88,7 +66,6 @@ function App() {
   //   setSelectedColor(randomColor());
   //   localStorage.setItem('favorites', JSON.stringify(newFavorites));
   // };
-
   // const handleRemoveFavorite = (country: Country) => {
   //   const newFavorites = favorites.filter((fav) => fav.name !== country.name);
   //   setFavorites(newFavorites);
@@ -117,6 +94,7 @@ function App() {
       })
     : [];
 
+    //istenilen özelliklere göre opsiyon oluşturma alanı
   const options = ['name', 'languages', 'capital'].map((option, index) => (
     <option key={index} value={option}>
       {option.charAt(0).toUpperCase() + option.slice(1)}
@@ -125,6 +103,7 @@ function App() {
 
   return (
     <div>
+      <div className='search-container'>
       <label htmlFor="filterData">Filter Country by: </label>
       <select
         id="filterData"
@@ -139,6 +118,7 @@ function App() {
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
       />
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -158,7 +138,13 @@ function App() {
                   : '',
               }}
             >
-     <img src={countryFlags[index]} alt={`${item.name} Flag`} height={100} /> {/* Bayrakları göster */}
+   <img
+  src={`https://flagcdn.com/w320/${item.code.toLowerCase()}.png`}
+  srcSet={`https://flagcdn.com/32x24/${item.code.toLowerCase()}.png 2x,
+            https://flagcdn.com/48x36/${item.code.toLowerCase()}.png 3x`}
+  alt={item.name}
+/>
+<div className='text-container'>
               <div>
                 <strong>Name:</strong> {item.name}
               </div>
@@ -170,6 +156,7 @@ function App() {
                 <strong>Capital:</strong> {item.capital}
               </div>
               <div>
+              </div>
                 {/* <button onClick={() => handleAddFavorite(item)}
                   >Favori Ekle</button>
                 <button onClick={() => handleRemoveFavorite(item)}>Favori Kaldır</button> */}

@@ -36,3 +36,42 @@
     transform: rotate(360deg);
   }
 }
+
+ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0;
+}
+
+li {
+  flex-basis: calc(20% - 10px); /* 4 sütunlu düzen için %25 genişlik */
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+li:hover {
+  transform: translateY(-5px);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+ 
+}
+.text-container{
+  padding-top: 10px;
+}
+.search-container{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+}
