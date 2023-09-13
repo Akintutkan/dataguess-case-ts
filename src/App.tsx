@@ -133,10 +133,12 @@ function App() {
               backgroundColor:
                 selectedItem && selectedItem.name === item.name
                   ? selectedColor
-                  : (!filter && index === 9 ) || (filter && index === filteredAndGroupedData.length - 1) 
-                  ? '#ff0000' // Son 10. veya son ögeye kırmızı arka plan rengi uygula
+                  : (!filter && index === 9) || (filter && filteredAndGroupedData.length >= 10 && index === 9)
+                  ? '#ff0000' // Filtre yoksa 10. öge, filtre varsa ve 10 veya daha fazla öğe varsa 10. ögeye kırmızı arka plan rengi uygula
+                  : filter && filteredAndGroupedData.length < 10 && index === filteredAndGroupedData.length - 1
+                  ? '#ff0000' // Filtre varsa ve az öğe varsa son ögeye kırmızı arka plan rengi uygula
                   : '',
-              }}
+            }}
             >
    <img
   src={`https://flagcdn.com/w320/${item.code.toLowerCase()}.png`}
