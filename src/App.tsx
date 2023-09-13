@@ -34,7 +34,8 @@ interface Country {
 function App() {
   const { loading, error, data } = useQuery(COUNTRIES_QUERY);
   const [filter, setFilter] = useState<string>('');
-  const [selectedItem, setSelectedItem] = useState<number | null | string>('');
+  const [selectedColor, setSelectedColor] = useState<string| any>("");
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [filteredData, setFilteredData] = useState<string>('name');
   const [favorites, setFavorites] = useState<Country[]>([]);
 
@@ -45,10 +46,16 @@ function App() {
       setSelectedItem(selectedIndex);
     }
   }, [data]);
-
-  const handleItemClick = (index: number) => {
-    setSelectedItem(index);
+  
+  const randomColor = () => {
+    const colors = ["#33FF57"];
+    return colors[Math.floor(Math.random() * colors.length)];
   };
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+    setSelectedColor(randomColor());
+  };
+
 
   const handleAddFavorite = (country: Country) => {
     const isAlreadyFavorite = favorites.some((fav) => fav.name === country.name);
@@ -58,14 +65,13 @@ function App() {
     }
     const newFavorites = [...favorites, country];
     setFavorites(newFavorites);
-    
+    setSelectedItem(country.name)
     localStorage.setItem('favorites', JSON.stringify(newFavorites));
   };
 
   const handleRemoveFavorite = (country: Country) => {
     const newFavorites = favorites.filter((fav) => fav.name !== country.name);
     setFavorites(newFavorites);
- 
     localStorage.setItem('favorites', JSON.stringify(newFavorites));
   };
 
@@ -119,12 +125,13 @@ function App() {
         <ul>
           {filteredAndGroupedData.map((item: any, index: number) => (
             <li
-              key={index}
-              onClick={() => handleItemClick(index)}
-              style={{
-                backgroundColor:
-                  selectedItem === index ? 'your-selected-color' : 'white',
-                cursor: 'pointer',
+            key={index}
+            onClick={() => handleItemClick(item)}
+            style={{
+              backgroundColor:
+                selectedItem && selectedItem.name === item.name
+                  ? selectedColor
+                  : ""
               }}
             >
               <div>
@@ -138,7 +145,13 @@ function App() {
                 <strong>Capital:</strong> {item.capital}
               </div>
               <div>
-                <button onClick={() => handleAddFavorite(item)}>Favori Ekle</button>
+                <button onClick={() => handleAddFavorite(item)}
+                style={{
+                  backgroundColor:
+                    selectedItem && selectedItem.name === item.name
+                      ? selectedColor
+                      : ""
+                  }}>Favori Ekle</button>
                 <button onClick={() => handleRemoveFavorite(item)}>Favori Kaldır</button>
               </div>
             </li>
