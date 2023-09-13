@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
+import axios from 'axios';
 
 
 // GraphQL sorgusu
@@ -21,16 +22,16 @@ const COUNTRIES_QUERY = gql`
   }
 `;
 
-interface Country {
-  capital: string;
-  emoji: string;
-  currency: string;
-  name: string;
-  native: string;
-  phone: string;
-  code: string;
-  languages: { name: string }[];
-}
+// interface Country {
+//   capital: string;
+//   emoji: string;
+//   currency: string;
+//   name: string;
+//   native: string;
+//   phone: string;
+//   code: string;
+//   languages: { name: string }[];
+// }
 
 
 function App() {
@@ -39,44 +40,62 @@ function App() {
   const [selectedColor, setSelectedColor] = useState<string| any>("");
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [filteredData, setFilteredData] = useState<string>('name');
-  const [favorites, setFavorites] = useState<Country[]>([]);
+  // const [favorites, setFavorites] = useState<Country[]>([]);
+  const [countryFlags, setCountryFlags] = useState<string[]>([]); // Ülke bayraklarını tutmak için bir dizi
 
-  
+  useEffect(() => {
+   
+    const fetchCountryFlags = async () => {
+      try {
+        const response = await axios.get('https://restcountries.com/v3.1/all'); // Tüm ülkeleri çekiyoruz
+        console.log(response.data)
+        const flags = response.data.map((country: any) => country.flags); // Ülke bayraklarını alıyoruz
+        setCountryFlags(flags);
+      } catch (error) {
+        console.error('Ülke bayraklarını alırken bir hata oluştu: ', error);
+      }
+    };
 
+    fetchCountryFlags();
+    
+  }, []);
 
-
-
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+    setSelectedColor(randomColor());
+  };
   const randomColor = () => {
     const colors = ["#33FF57",]; //istenirse bir kaç renk daha eklenebilir
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const resetColor = () =>{
-    const color = ["#FFF"];
-    return color
-  }
+
+  // const resetColor = () =>{
+  //   const color = ["#FFF"];
+  //   return color
+  // }
 
 
-  const handleAddFavorite = (country: Country) => {
-    const isAlreadyFavorite = favorites.some((fav) => fav.name === country.name);
-    if (isAlreadyFavorite) {
-      alert('This country is already in your favorites!');
-      return;
-    }
-    const newFavorites = [...favorites, country];
-    setFavorites(newFavorites);
-    setSelectedItem(country)
-    setSelectedColor(randomColor());
-    localStorage.setItem('favorites', JSON.stringify(newFavorites));
-  };
+  // const handleAddFavorite = (country: Country) => {
+  //   const isAlreadyFavorite = favorites.some((fav) => fav.name === country.name);
+  //   if (isAlreadyFavorite) {
+  //     alert('This country is already in your favorites!');
+  //     return;
+  //   }
+  //   const newFavorites = [...favorites, country];
+  //   setFavorites(newFavorites);
+  //   setSelectedItem(country)
+  //   setSelectedColor(randomColor());
+  //   localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  // };
 
-  const handleRemoveFavorite = (country: Country) => {
-    const newFavorites = favorites.filter((fav) => fav.name !== country.name);
-    setFavorites(newFavorites);
-    setSelectedItem(country)
-    setSelectedColor(resetColor());
-    localStorage.setItem('favorites', JSON.stringify(newFavorites));
-  };
+  // const handleRemoveFavorite = (country: Country) => {
+  //   const newFavorites = favorites.filter((fav) => fav.name !== country.name);
+  //   setFavorites(newFavorites);
+  //   setSelectedItem(country)
+  //   setSelectedColor(resetColor());
+  //   localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  // };
 
   // Verileri İstenilen özelliklere göre filtreleme
   const filteredAndGroupedData = data
@@ -129,16 +148,17 @@ function App() {
           {filteredAndGroupedData.map((item: any, index: number) => (
             <li
             key={index}
+            onClick={() => handleItemClick(item)}
             style={{
               backgroundColor:
                 selectedItem && selectedItem.name === item.name
                   ? selectedColor
                   : (index === 9 ) || index === filteredAndGroupedData.length - 1 
-                  ? '#ff0000' // Son 10. veya son ögeye siyah arka plan rengi uygula
+                  ? '#ff0000' // Son 10. veya son ögeye kırmızı arka plan rengi uygula
                   : '',
               }}
             >
-    
+     <img src={countryFlags[item]} alt={`${item.name} Flag`} height={100} /> {/* Bayrakları göster */}
               <div>
                 <strong>Name:</strong> {item.name}
               </div>
@@ -150,19 +170,19 @@ function App() {
                 <strong>Capital:</strong> {item.capital}
               </div>
               <div>
-                <button onClick={() => handleAddFavorite(item)}
+                {/* <button onClick={() => handleAddFavorite(item)}
                   >Favori Ekle</button>
-                <button onClick={() => handleRemoveFavorite(item)}>Favori Kaldır</button>
+                <button onClick={() => handleRemoveFavorite(item)}>Favori Kaldır</button> */}
               </div>
             </li>
           ))}
         </ul>
       )}
-      <ul>
+      {/* <ul>
         {favorites.map((favorite, index) => (
           <li key={index}>{favorite.name}</li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 }
