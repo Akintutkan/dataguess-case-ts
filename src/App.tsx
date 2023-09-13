@@ -48,7 +48,7 @@ function App() {
   }, [data]);
   
   const randomColor = () => {
-    const colors = ["#33FF57",]; //istenirse bi
+    const colors = ["#33FF57",]; //istenirse bir kaç renk daha eklenebilir
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
