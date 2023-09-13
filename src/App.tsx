@@ -45,7 +45,7 @@ function App() {
     setSelectedColor(randomColor());
   };
   const randomColor = () => {
-    const colors = ["#33FF57",]; //istenirse bir kaç renk daha eklenebilir
+    const colors = ["#00ff2f",]; //istenirse bir kaç renk daha eklenebilir
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
@@ -133,7 +133,7 @@ function App() {
               backgroundColor:
                 selectedItem && selectedItem.name === item.name
                   ? selectedColor
-                  : (index === 9 ) || index === filteredAndGroupedData.length - 1 
+                  : (!filter && index === 9 ) || (filter && index === filteredAndGroupedData.length - 1) 
                   ? '#ff0000' // Son 10. veya son ögeye kırmızı arka plan rengi uygula
                   : '',
               }}
