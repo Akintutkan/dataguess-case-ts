@@ -49,7 +49,7 @@ function App() {
       try {
         const response = await axios.get('https://restcountries.com/v3.1/all'); // Tüm ülkeleri çekiyoruz
         console.log(response.data)
-        const flags = response.data.map((country: any) => country.flags); // Ülke bayraklarını alıyoruz
+        const flags = response.data.map((country: any) => country.flags.png); // Ülke bayraklarını alıyoruz
         setCountryFlags(flags);
       } catch (error) {
         console.error('Ülke bayraklarını alırken bir hata oluştu: ', error);
@@ -158,7 +158,7 @@ function App() {
                   : '',
               }}
             >
-     <img src={countryFlags[item]} alt={`${item.name} Flag`} height={100} /> {/* Bayrakları göster */}
+     <img src={countryFlags[index]} alt={`${item.name} Flag`} height={100} /> {/* Bayrakları göster */}
               <div>
                 <strong>Name:</strong> {item.name}
               </div>
