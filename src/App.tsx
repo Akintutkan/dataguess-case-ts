@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 
+
 // GraphQL sorgusu
 const COUNTRIES_QUERY = gql`
   query {
@@ -31,6 +32,7 @@ interface Country {
   languages: { name: string }[];
 }
 
+
 function App() {
   const { loading, error, data } = useQuery(COUNTRIES_QUERY);
   const [filter, setFilter] = useState<string>('');
@@ -39,14 +41,11 @@ function App() {
   const [filteredData, setFilteredData] = useState<string>('name');
   const [favorites, setFavorites] = useState<Country[]>([]);
 
-  useEffect(() => {
-    // Otomatik olarak 10. öğeyi veya son öğeyi seçin
-    if (data?.countries.length > 0) {
-      const selectedIndex = Math.min(9, data.countries.length - 1);
-      setSelectedItem(selectedIndex);
-    }
-  }, [data]);
   
+
+
+
+
   const randomColor = () => {
     const colors = ["#33FF57",]; //istenirse bir kaç renk daha eklenebilir
     return colors[Math.floor(Math.random() * colors.length)];
@@ -134,9 +133,12 @@ function App() {
               backgroundColor:
                 selectedItem && selectedItem.name === item.name
                   ? selectedColor
-                  : ""
+                  : (index === 9 ) || index === filteredAndGroupedData.length - 1 
+                  ? '#ff0000' // Son 10. veya son ögeye siyah arka plan rengi uygula
+                  : '',
               }}
             >
+    
               <div>
                 <strong>Name:</strong> {item.name}
               </div>
